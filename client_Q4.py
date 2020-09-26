@@ -7,4 +7,12 @@ if len(sys.argv) < 2:
 
 server = sys.argv[1]
 conn = rpyc.connect(server, 5000)
-print(conn.get_question)
+
+vector = []
+n = int(input("Enter vector size: "))
+
+for i in range(n):
+    value = int(input("Enter value for array: "))
+    vector.append(value)
+
+print(conn.root.get_sum_vector(vector))

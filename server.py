@@ -9,10 +9,13 @@ class MyService(rpyc.Service):
         #  código que é executado quando uma conexão é finalizada, caso seja necessário
         pass
 
+    def exposed_get_sum_vector(self, vector):
+        return sum(vector)
+
     def exposed_get_answer(self):  # este é um método exposto
         return 42
 
-    exposed_the_real_answer_though = 43     # este é um atributo exposto
+    exposed_the_real_answer_though = 43 # este é um atributo exposto
 
     def get_question(self):  # este método não é exposto
         return "Qual é  a cor do cavalo branco de Napoleão?"
