@@ -6,7 +6,7 @@ if len(sys.argv) < 2:
 
 server = sys.argv[1]
 
-conn = rpyc.connect(server, 18861)
+conn = rpyc.connect(server, 5000)
 
 print(conn.root)
 print(conn.root.get_answer())
