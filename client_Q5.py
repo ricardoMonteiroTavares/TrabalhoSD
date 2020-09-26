@@ -13,6 +13,8 @@ start = time.time()
 server = sys.argv[1]
 conn = rpyc.connect(server, 5000)
 
+conn._config['sync_request_timeout'] = None # No timeout
+
 vector = []
 n = 10000
 
