@@ -1,24 +1,15 @@
-# Trabalho Prático 1 - RPC
+Traba# Trabalho Prático 2 - Raft
 
 ## Sobre
-Disponível em: http://www.ic.uff.br/~simone/sd2/trab1.html
+Disponível em: http://www.cs.bu.edu/~jappavoo/jappavoo.github.com/451/labs/lab-raft.html
 
-Neste trabalho você irá implementar uma chamada remota a procedimento usando a biblioteca RPyC de Python(https://rpyc.readthedocs.io/en/latest/install.html).
+Neste trabalho, você implementará uma parte do Raft, um algoritmo de consenso para gerenciar log replicado.
+Para isso, deve ser desenvolvido na linguagem Go e só deve mexer no arquivo *raft.go*, que está localizado em ***src/raft***
 
-Para instalar a biblioteca rpyc basta executar o comando no terminal:
-```
-pip install rpyc
-```
-ou 
-```
-pip3 install rpyc
-```
-O grupo deve enviar via **Classroom** um relatório com as respostas às questões até dia **08 de outubro de 2020 às 18:00 horas**.
+Para instalar o compilador Go basta acessar este link: https://golang.org/doc/install
 
-O modelo que iremos utilizar é orientado a serviços. No arquivo *server.py* apresenta-se um template para um servidor oferecer os serviços de chamada remota de procedimento.
+O grupo deve enviar via **Classroom** o código válido até dia **10 de novembro de 2020 às 18:00 horas**.
 
-Devem existir os dois métodos para conectar e desconectar uma conexão e os outros métodos podem ser definidos livremente por você. 
+Implementar eleição de líder e heartbeats (RPCs AppendEntries sem entradas no log) conforme a especificação do Raft. O objetivo é que um único líder seja eleito, que o líder continue sendo o líder se não houver falhas e que um novo líder assuma o controle se o antigo líder falhar ou se os pacotes de/para o antigo líder forem perdidos. Execute *go test -run 2A* para testar seu código.
 
-Neste caso, você pode escolher os atributos que vão ser expostos para outros processos: se o nome começa com  ***exposed_***, ele poderá ser acessado remotamente, senão ele será acessível somente localmente. 
-
-O programa contido no arquivo *client.py* é um cliente que se conecta com o servidor e executa algumas instruções remotamente. 
+E para rodar, precisa definir a variável de ambiente GOPATH e o seu valor é a localização deste trabalho antes do *src*
