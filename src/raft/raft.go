@@ -18,6 +18,7 @@ package raft
 //
 
 import (
+	"fmt"
 	"labrpc"
 	"sync"
 )
@@ -37,6 +38,14 @@ type ApplyMsg struct {
 	Snapshot    []byte // ignore for lab2; only used in lab3
 }
 
+type PeerState int
+
+const (
+	Follower PeerState = iota
+	Candidate
+	Leader
+)
+
 //
 // A Go object implementing a single Raft peer.
 //
@@ -49,6 +58,7 @@ type Raft struct {
 	// Your data here (2A, 2B, 2C).
 	// Look at the paper's Figure 2 for a description of what
 	// state a Raft server must maintain.
+	State       PeerState
 	CurrentTerm int
 	VotedFor    int
 	Log         []ApplyMsg
@@ -228,9 +238,11 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 
 	// Your initialization code here (2A, 2B, 2C).
+	rf.VotedFor = -1
 
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 
+	fmt.Println(rf)
 	return rf
 }
