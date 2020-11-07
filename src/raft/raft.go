@@ -94,6 +94,13 @@ func (rf *Raft) GetState() (int, bool) {
 	return term, isleader
 }
 
+// get random election timeout
+func getTimeout() time.Duration {
+	rand.Seed(time.Now().UnixNano())
+	return time.Duration(rand.Intn(MaxElectionTimeoutMs-MinElectionTimeoutMs) +
+		MinElectionTimeoutMs)
+}
+
 //
 // save Raft's persistent state to stable storage,
 // where it can later be retrieved after a crash and restart.
