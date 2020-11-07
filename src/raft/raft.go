@@ -213,6 +213,23 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 	return ok
 }
 
+func (rf *Raft) follower() {
+	for {
+		select {
+		case <-rf.LogCh:
+			// Do nothing for now
+		case <-time.After(rf.ElectionTimeout * time.Millisecond):
+			rf.State = Candidate
+			rf.CurrentTerm = rf.CurrentTerm + 1
+			rf.VotedFor = rf.me
+			rf.numberOfVotes = 1
+
+			for server := range rf.peers {
+				go rf.RequestVote(server)
+			}
+		}
+	}
+}
 //
 // the service using Raft (e.g. a k/v server) wants to start
 // agreement on the next command to be appended to Raft's log. if this
