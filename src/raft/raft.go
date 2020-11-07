@@ -18,7 +18,6 @@ package raft
 //
 
 import (
-	"fmt"
 	"labrpc"
 	"math/rand"
 	"sync"
@@ -343,6 +342,5 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 
-	fmt.Println(rf)
 	return rf
 }
