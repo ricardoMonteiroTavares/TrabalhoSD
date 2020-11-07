@@ -244,7 +244,7 @@ func (rf *Raft) follower() {
 			rf.numberOfVotes = 1
 
 			for server := range rf.peers {
-				go rf.RequestVote(server)
+				go rf.Vote(server)
 			}
 		}
 	}
@@ -263,6 +263,26 @@ func (rf *Raft) LeaderElection() {
 		rf.ElectionTimeout = getTimeout()
 	}
 }
+
+func (rf *Raft) Vote(server int) {
+	rf.mu.Lock()
+
+	var args = RequestVoteArgs{
+		Term:         rf.CurrentTerm,
+		CandidateId:  rf.me,
+		LastLogIndex: len(rf.Log) - 1,
+		LastLogTerm:  rf.Log[len(rf.Log)-1].Term}
+
+	var reply RequestVoteReply
+
+	if rf.sendRequestVote(server, &args, &reply) {
+		if reply.VoteGranted {
+			rf.numberOfVotes = rf.numberOfVotes + 1
+		}
+	}
+	rf.mu.Unlock()
+}
+
 //
 // the service using Raft (e.g. a k/v server) wants to start
 // agreement on the next command to be appended to Raft's log. if this
@@ -315,7 +335,10 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 
 	// Your initialization code here (2A, 2B, 2C).
+	rf.State = Follower
 	rf.VotedFor = -1
+	rf.numberOfVotes = 0
+	rf.ElectionTimeout = getTimeout()
 
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
