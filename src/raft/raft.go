@@ -86,8 +86,10 @@ type AppendEntriesReply struct {
 // believes it is the leader.
 func (rf *Raft) GetState() (int, bool) {
 
-	var term int
-	var isleader bool
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
+	var term int = rf.CurrentTerm
+	var isleader bool = (rf.State == Leader)
 	// Your code here (2A).
 	return term, isleader
 }
