@@ -82,12 +82,13 @@ type AppendEntriesReply struct {
 	Success bool
 }
 
-// return currentTerm and whether this server
-// believes it is the leader.
+// Retorna currentTerm e se este servidor acredita que é o líder.
 func (rf *Raft) GetState() (int, bool) {
 
-	var term int
-	var isleader bool
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
+	var term int = rf.CurrentTerm
+	var isleader bool = (rf.State == Leader)
 	// Your code here (2A).
 	return term, isleader
 }
