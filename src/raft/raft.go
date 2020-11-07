@@ -20,11 +20,27 @@ package raft
 import (
 	"fmt"
 	"labrpc"
+	"math/rand"
 	"sync"
+	"time"
 )
 
 // import "bytes"
 // import "encoding/gob"
+
+const (
+	HeartbeatTimeoutMs   = 100
+	MinElectionTimeoutMs = 300
+	MaxElectionTimeoutMs = 600
+)
+
+type PeerState int
+
+const (
+	Follower PeerState = iota
+	Candidate
+	Leader
+)
 
 //
 // as each Raft peer becomes aware that successive log entries are
@@ -38,13 +54,10 @@ type ApplyMsg struct {
 	Snapshot    []byte // ignore for lab2; only used in lab3
 }
 
-type PeerState int
-
-const (
-	Follower PeerState = iota
-	Candidate
-	Leader
-)
+type LogEntry struct {
+	Term    int
+	Command interface{}
+}
 
 //
 // A Go object implementing a single Raft peer.
@@ -58,14 +71,19 @@ type Raft struct {
 	// Your data here (2A, 2B, 2C).
 	// Look at the paper's Figure 2 for a description of what
 	// state a Raft server must maintain.
-	State       PeerState
-	CurrentTerm int
-	VotedFor    int
-	Log         []ApplyMsg
+	State           PeerState
+	CurrentTerm     int
+	VotedFor        int
+	ElectionTimeout time.Duration
+
+	LogCh       <-chan struct{}
+	Log         []LogEntry
 	CommitIndex int
 	LastApplied int
 	NextIndex   []int
 	MatchIndex  []int
+
+	numberOfVotes int
 }
 
 type AppendEntriesArgs struct {
