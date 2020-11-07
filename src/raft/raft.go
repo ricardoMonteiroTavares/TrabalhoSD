@@ -177,6 +177,25 @@ type RequestVoteReply struct {
 //
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
+	if rf.me != args.CandidateId {
+		if rf.VotedFor == -1 {
+			var myLogIndex int = len(rf.Log) - 1
+			var myTerm int = rf.Log[myLogIndex].Term
+			if myTerm < args.LastLogTerm {
+				reply.Term = rf.CurrentTerm
+				reply.VoteGranted = true
+				rf.VotedFor = args.CandidateId
+			} else if (myTerm == args.LastLogTerm) && (myLogIndex < args.LastLogIndex) {
+				reply.Term = rf.CurrentTerm
+				reply.VoteGranted = true
+				rf.VotedFor = args.CandidateId
+			} else {
+				reply.VoteGranted = false
+				rf.VotedFor = -1
+			}
+
+		}
+	}
 }
 
 //
