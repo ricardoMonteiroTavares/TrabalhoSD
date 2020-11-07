@@ -230,6 +230,20 @@ func (rf *Raft) follower() {
 		}
 	}
 }
+
+func (rf *Raft) LeaderElection() {
+	// Se eu for eleito
+	if rf.numberOfVotes > len(rf.peers)/2 {
+		rf.State = Leader
+		// Mandar um log aqui ou algo parecido
+		// Se eu não for eleito
+	} else {
+		/* rf.CurrentTerm = rf.CurrentTerm + 1
+		rf.numberOfVotes = 0 */
+		rf.State = Follower
+		rf.ElectionTimeout = getTimeout()
+	}
+}
 //
 // the service using Raft (e.g. a k/v server) wants to start
 // agreement on the next command to be appended to Raft's log. if this
